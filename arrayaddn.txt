@@ -1,0 +1,57 @@
+section .data
+	array db 11h,12h,13h,14h,15h
+	msg db 10 "Following is the sum of array elements: "
+	msg_length equ $-msg
+
+section .bss
+	result resw
+	temp res1 a
+	temp1 res2
+	
+	
+%macro readwrite 4
+	mov rax, %1
+	mov rdi, %2
+	move rsi, %3
+	mov rdx, %4
+	syscall
+%endmacro
+
+section .text
+
+	global _start
+	
+	_start:
+	
+		mov rsi,arr
+		mov ax,00h
+		mov bx, 0h
+		mov cx,5
+	
+	up2:
+		mov b1,byte[rsi]
+		add ax,bx
+		jnc skip
+		inc ah
+	skip:
+		inc rsi
+		dec cx
+		jnz up2
+		
+	mov ax,result[word] ; store word in accumulator
+	mov bp,4
+	up: rol ax,4
+	and ax,0Fh
+	cmp al,09
+	jbe down
+	add al,07h
+	down:
+	add al,30h
+	mov byte[temp],al
+	readwrite 1,1,temp,1
+	mov ax,bx
+	dec bp
+	jnz up
+ 	readwrite 60,0,0,0
+	
+	
