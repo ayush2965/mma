@@ -5,6 +5,16 @@ section .data
 	len2 equ $-msg2
 	msg3 db 10, "Offset: "
 	len3 equ $-msg3
+	msg4 db 10, "Local Descriptor Register Table BA: "
+	len4 equ $-msg4
+	msg5 db 10, "Interrupt Descriptor Register Table"
+	len5 equ $-msg5
+	msg6 db 10, "Task Register BA: "
+	len6 equ $-msg6
+	msg7 db 10, "Machine Status Word BA: "
+	len7 equ $-msg7
+	newline db 10
+	
 	
 section .bss
 	abc resq 1
@@ -12,6 +22,13 @@ section .bss
 	temp64 resq 1
 	temp16 resw 1
 	asc resb 1
+	
+	xyz resq 1
+	xyzlim resw 1
+	
+	pqr resw 1
+	tuv resw 1
+	efg resw 1
 
 %macro rw 4
 	mov rax,%1
@@ -26,16 +43,49 @@ section .text
 	_start:
 		rw 1,1,msg1,len1
 		rw 1,1,msg2,len2
-		
 		mov rsi,abc
 		sgdt[rsi]
 		mov rax,[rsi]
 		call displayba
-		
-		
 		rw 1,1,msg3,len3
-		
 		mov rsi,abclim
+		mov ax,[rsi]
+		call displayoffset
+		
+		rw 1,1,newline,1
+		
+		rw 1,1,msg4,len4
+		mov rsi,pqr
+		sldt[rsi]
+		mov ax,[rsi]
+		call displayoffset
+		
+		rw 1,1,newline,1
+		
+		rw 1,1,msg5,len5
+		rw 1,1,msg2,len2
+		mov rsi,xyz
+		sidt[rsi]
+		mov rax,[rsi]
+		call displayba
+		rw 1,1,msg3,len3
+		mov rsi,xyzlim
+		mov ax,[rsi]
+		call displayoffset
+
+		rw 1,1,newline,1
+		
+		rw 1,1,msg6,len6
+		mov rsi,pqr
+		str[rsi]
+		mov ax,[rsi]
+		call displayoffset
+		
+		rw 1,1,newline,1
+		
+		rw 1,1,msg7,len7
+		mov rsi,efg
+		smsw[rsi]
 		mov ax,[rsi]
 		call displayoffset
 	
