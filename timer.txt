@@ -1,0 +1,66 @@
+;array addition
+;mov R0,#10h
+;mov R1,#05h
+;mov A,@R0
+;inc R0
+;Up:
+;add A,@R0
+;inc R0
+;djnz R1,Up
+
+
+;ORG 0000H
+   ; LJMP MAIN
+
+;ORG 000BH
+    ;LJMP T0_ISR
+
+;ORG 0030H
+;MAIN:
+    ;MOV TMOD, #01H
+   ; MOV TH0, #0FFH
+   ; MOV TL0, #00H
+    ;SETB ET0
+    ;SETB EA
+    ;SETB TR0
+
+;HERE:
+    ;SJMP HERE
+
+;T0_ISR:
+    ;CLR TR0
+   ; MOV TH0, #0FFH
+   ; MOV TL0, #00H
+    ;CPL P1.0
+   ; SETB TR0
+   ; RETI
+
+
+;org 0100
+;mov IE,#82h
+;mov TMOD,#01h
+;mov TL0,#0Ch
+;mov TH0,#0FEh
+;setb TR0
+;HERE:
+	;sjmp HERE
+;org 000Bh
+;cpl P2.1
+;clr TR0
+;mov TL0,#0Ch
+;mov TH0,#0FEh
+;setb TR0
+;reti
+
+DELAY:
+mov TMOD,#01h
+mov TH0, #0FCh
+mov TL0, #018h
+setb TR0
+HERE:
+jnb TF0,HERE
+clr TR0
+clr TF0
+ret
+
+
